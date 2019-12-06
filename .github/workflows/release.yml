@@ -41,8 +41,8 @@ jobs:
 
 
     # install modules by composer. remove this step it if you don't need.
-    - name: composer install
-      run: composer install
+    # - name: composer install
+      # run: composer install
 
     # install modules by npm.
     # - name: npm clean install
