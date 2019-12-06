@@ -17,8 +17,9 @@ on:
   push:
     tags:
       - dev_*
-      - 0.*.*.*
-      - 1.*.*.*
+      - 0.*.*
+      - 1.*.*
+      - 2.*.*
 
     # - v*.*.*  # to use filters. wildcard characters are supported.
 env:
@@ -59,22 +60,23 @@ jobs:
       run: |
         yarn dev
     - name: build production 
-      if: startsWith(github.ref, '0.') || startsWith(github.ref, '1.')
+      if: startsWith(github.ref, 'dev_') == false 
       run: |
         yarn build
-    - name: add version
-      run: |
-        cd ..
-        # retrieve tag and replase version number in file.
-        export CREATE_EVENT_REF_TYPE=$(jq --raw-output .ref_type "$GITHUB_EVENT_PATH")
-        export TAGNAME=$(jq --raw-output .ref "$GITHUB_EVENT_PATH")
-        sed -i -e "s/{release version}/${TAGNAME}/g" ${PACKAGE_NAME}.php
+    # - name: add version
+    #   if: startsWith(github.ref, 'dev_') == false
+    #   run: |
+    #     cd ..
+    #     # retrieve tag and replase version number in file.
+    #     export CREATE_EVENT_REF_TYPE=$(jq --raw-output .ref_type "$GITHUB_EVENT_PATH")
+    #     export TAGNAME=$(jq --raw-output .ref "$GITHUB_EVENT_PATH")
+    #     sed -i -e "s/{release version}/${TAGNAME}/g" ${PACKAGE_NAME}.php
 
     # create a zip acrive for installing to WordPress.
     # please change FILES_TO_ARCIVE to your project name.
     - name: create archive
       env:
-        FILES_TO_ARCIVE: "*.php assets/ includes/ *.md LICENSE vendor/*"
+        FILES_TO_ARCIVE: "*.php assets/ wordproof-timestamt/includes/ wordproof-timestamt/assets/ *.md LICENSE"
       run: zip -r ${PACKAGE_NAME}.zip ${FILES_TO_ARCIVE}
 
     # upload zip arvive by ghr.
