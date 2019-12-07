@@ -56,6 +56,8 @@ jobs:
       run: |
         echo TAG ${TAG}
         echo IS_DEV ${IS_DEV}
+        pwd
+        ls -al
     - name: Cache node modules
       uses: actions/cache@v1
       with:
@@ -67,18 +69,21 @@ jobs:
           ${{ runner.os }}-
     - name: install dependencies
       run: |
+        ls -al
         cd wordproof-timestamp
         pwd
         yarn install
     - name: build development
       if: startsWith(github.ref, 'refs/tags/dev_') == true
       run: |
+        ls -al
         cd wordproof-timestamp
         pwd
         yarn dev
     - name: build production 
       if: startsWith(github.ref, 'refs/tags/dev_') == false
       run: |
+        ls -al
         cd wordproof-timestamp
         pwd
         yarn build
@@ -89,6 +94,7 @@ jobs:
       env:
         FILES_TO_ARCIVE: "*.php *.md LICENSE readme.txt gpl.txt includes/ assets/"
       run: |
+        ls -al
         cd wordproof-timestamp
         pwd
         zip -r ../${PACKAGE_NAME}.zip ${FILES_TO_ARCIVE}
