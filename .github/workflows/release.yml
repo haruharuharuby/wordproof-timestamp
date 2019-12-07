@@ -52,10 +52,12 @@ jobs:
     # remove this step if you want to update the version manually.
     # NOTICE: ref_type exists only for events of type create. see https://developer.github.com/v3/activity/events/types/#createevent
     - name: overview
+      env:
+        TAG: ${{ github.ref }}
+        IS_DEV: ${{ startsWith(github.ref, 'dev_') }}
       run: |
-        echo ref: ${{ github.ref )}}
-        echo dev/prod ${{ startsWith(github.ref, 'dev_') }}
-        echo package_name ${{ }}
+        echo TAG ${TAG}
+        echo IS_DEV ${IS_DEV}
     - name: Cache node modules
       uses: actions/cache@v1
       with:
