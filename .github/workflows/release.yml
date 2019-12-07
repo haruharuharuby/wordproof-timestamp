@@ -68,16 +68,19 @@ jobs:
     - name: install dependencies
       run: |
         cd wordproof-timestamp
+        pwd
         yarn install
     - name: build development
       if: startsWith(github.ref, 'refs/tags/dev_') == true
       run: |
         cd wordproof-timestamp
+        pwd
         yarn dev
     - name: build production 
       if: startsWith(github.ref, 'refs/tags/dev_') == false
       run: |
         cd wordproof-timestamp
+        pwd
         yarn build
 
     # create a zip acrive for installing to WordPress.
@@ -87,6 +90,7 @@ jobs:
         FILES_TO_ARCIVE: "*.php *.md LICENSE readme.txt gpl.txt includes/ assets/"
       run: |
         cd wordproof-timestamp
+        pwd
         zip -r ../${PACKAGE_NAME}.zip ${FILES_TO_ARCIVE}
 
     # upload zip arvive by ghr.
@@ -102,6 +106,7 @@ jobs:
         export TAGNAME=$(jq --raw-output .ref "$GITHUB_EVENT_PATH")
         ls -al
         env
+        pwd
         # install ghr, then upload archve.
         go get -u github.com/tcnksm/ghr
         ${GOPATH}/bin/ghr -b "${PACKAGE_NAME} ${TAGNAME}" -replace ${TAGNAME} ${PACKAGE_NAME}.zip
