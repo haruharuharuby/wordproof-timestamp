@@ -100,6 +100,8 @@ jobs:
         # retrieve tag and replase version number in file.
         export CREATE_EVENT_REF_TYPE=$(jq --raw-output .ref_type "$GITHUB_EVENT_PATH")
         export TAGNAME=$(jq --raw-output .ref "$GITHUB_EVENT_PATH")
+        ls -al
+        env
         # install ghr, then upload archve.
         go get -u github.com/tcnksm/ghr
         ${GOPATH}/bin/ghr -b "${PACKAGE_NAME} ${TAGNAME}" -replace ${TAGNAME} ${PACKAGE_NAME}.zip
