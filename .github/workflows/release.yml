@@ -84,7 +84,7 @@ jobs:
     # please change FILES_TO_ARCIVE to your project name.
     - name: create archive
       env:
-        FILES_TO_ARCIVE: "*.php includes/ assets/ *.md LICENSE readme.txt gpl.txt"
+        FILES_TO_ARCIVE: "*.php *.md LICENSE readme.txt gpl.txt includes/ assets/"
       run: |
         cd wordproof-timestamp
         zip -r ${PACKAGE_NAME}.zip ${FILES_TO_ARCIVE}
