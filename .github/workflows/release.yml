@@ -24,7 +24,8 @@ on:
     # - v*.*.*  # to use filters. wildcard characters are supported.
 env:
   PACKAGE_NAME: 'wordproof-timestamp'
-
+  TAG: ${{ github.ref }}
+  IS_DEV: ${{ startsWith(github.ref, 'refs/tags/dev_') }}
 # https://help.github.com/en/articles/workflow-syntax-for-github-actions#jobs
 jobs:
   release:
@@ -52,9 +53,6 @@ jobs:
     # remove this step if you want to update the version manually.
     # NOTICE: ref_type exists only for events of type create. see https://developer.github.com/v3/activity/events/types/#createevent
     - name: overview
-      env:
-        TAG: ${{ github.ref }}
-        IS_DEV: ${{ startsWith(github.ref, 'dev_') }}
       run: |
         echo TAG ${TAG}
         echo IS_DEV ${IS_DEV}
@@ -72,12 +70,14 @@ jobs:
         cd wordproof-timestamp
         yarn install
     - name: build development
-      if: startsWith(github.ref, 'dev_')
+      if: startsWith(github.ref, 'refs/tags/dev_') == false
       run: |
+        cd wordproof-timestamp
         yarn dev
     - name: build production 
-      if: startsWith(github.ref, 'dev_') == false 
+      if: startsWith(github.ref, 'refs/tags/dev_') == true
       run: |
+        cd wordproof-timestamp
         yarn build
     # - name: add version
     #   if: startsWith(github.ref, 'dev_') == false
