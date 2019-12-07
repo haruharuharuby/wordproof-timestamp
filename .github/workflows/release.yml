@@ -87,7 +87,7 @@ jobs:
         FILES_TO_ARCIVE: "*.php *.md LICENSE readme.txt gpl.txt includes/ assets/"
       run: |
         cd wordproof-timestamp
-        zip -r ${PACKAGE_NAME}.zip ${FILES_TO_ARCIVE}
+        zip -r ../${PACKAGE_NAME}.zip ${FILES_TO_ARCIVE}
 
     # upload zip arvive by ghr.
     # `secrets.GITHUB_TOKEN` for using ghr is issued temporarily when executing action. No special settings are required.
