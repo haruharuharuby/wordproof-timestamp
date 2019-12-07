@@ -59,7 +59,7 @@ jobs:
     - name: Cache node modules
       uses: actions/cache@v1
       with:
-        path: ~/wordproof-timestamp/wordproof-timestamp/node_modules
+        path: ~/wordproof-timestamp/node_modules
         key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -94,7 +94,7 @@ jobs:
     # ghr - Easily ship your project to your user using Github Releases : https://deeeet.com/ghr/
     - name: upload to github release
       env:
-        GITHUB_TOKEN: ${{ secrets.release }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GOPATH: /home/runner/go
       run: |
         # retrieve tag and replase version number in file.
