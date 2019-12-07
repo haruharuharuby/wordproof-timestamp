@@ -94,7 +94,7 @@ jobs:
     # ghr - Easily ship your project to your user using Github Releases : https://deeeet.com/ghr/
     - name: upload to github release
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.release }}
         GOPATH: /home/runner/go
       run: |
         # retrieve tag and replase version number in file.
