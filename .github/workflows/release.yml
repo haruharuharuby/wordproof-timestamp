@@ -79,21 +79,15 @@ jobs:
       run: |
         cd wordproof-timestamp
         yarn build
-    # - name: add version
-    #   if: startsWith(github.ref, 'dev_') == false
-    #   run: |
-    #     cd ..
-    #     # retrieve tag and replase version number in file.
-    #     export CREATE_EVENT_REF_TYPE=$(jq --raw-output .ref_type "$GITHUB_EVENT_PATH")
-    #     export TAGNAME=$(jq --raw-output .ref "$GITHUB_EVENT_PATH")
-    #     sed -i -e "s/{release version}/${TAGNAME}/g" ${PACKAGE_NAME}.php
 
     # create a zip acrive for installing to WordPress.
     # please change FILES_TO_ARCIVE to your project name.
     - name: create archive
       env:
-        FILES_TO_ARCIVE: "*.php wordproof-timestamp/includes/ wordproof-timestamp/assets/ *.md LICENSE readme.txt gpl.txt"
-      run: zip -r ${PACKAGE_NAME}.zip ${FILES_TO_ARCIVE}
+        FILES_TO_ARCIVE: "*.php includes/ assets/ *.md LICENSE readme.txt gpl.txt"
+      run: |
+        cd wordproof-timestamp
+        zip -r ${PACKAGE_NAME}.zip ${FILES_TO_ARCIVE}
 
     # upload zip arvive by ghr.
     # `secrets.GITHUB_TOKEN` for using ghr is issued temporarily when executing action. No special settings are required.
