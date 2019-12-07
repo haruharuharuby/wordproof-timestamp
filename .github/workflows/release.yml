@@ -72,10 +72,12 @@ jobs:
     - name: build development
       if: startsWith(github.ref, 'refs/tags/dev_') == true
       run: |
+        cd wordproof-timestamp
         yarn dev
     - name: build production 
       if: startsWith(github.ref, 'refs/tags/dev_') == false
       run: |
+        cd wordproof-timestamp
         yarn build
     # - name: add version
     #   if: startsWith(github.ref, 'dev_') == false
