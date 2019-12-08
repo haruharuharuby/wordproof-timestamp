@@ -78,7 +78,13 @@ jobs:
         cd wordproof-timestamp
         pwd
         yarn build
-
+    - name: add version
+      run: |
+        # retrieve tag and replase version number in file.
+        export REF=$(jq --raw-output .ref "$GITHUB_EVENT_PATH")
+        export TAG=$(echo ${REF} | cut -c 11-)
+        sed -i -e "s/{release version}/${TAGNAME}/g" ${PACKAGE_NAME}.php
+        
     # create a zip acrive for installing to WordPress.
     # please change FILES_TO_ARCIVE to your project name.
     - name: create archive
