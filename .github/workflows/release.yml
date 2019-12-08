@@ -107,4 +107,4 @@ jobs:
         pwd
         # install ghr, then upload archve.
         go get -u github.com/tcnksm/ghr
-        ${GOPATH}/bin/ghr -b "${PACKAGE_NAME} ${TAGNAME}" -replace ${TAGNAME} ${PACKAGE_NAME}.zip
+        ${GOPATH}/bin/ghr -b "${PACKAGE_NAME} ${TAG}" -replace ${TAG} ${PACKAGE_NAME}.zip
