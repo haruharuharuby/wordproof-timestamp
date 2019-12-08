@@ -80,6 +80,7 @@ jobs:
         yarn build
     - name: add version
       run: |
+        cd wordproof-timestamp
         # retrieve tag and replase version number in file.
         export REF=$(jq --raw-output .ref "$GITHUB_EVENT_PATH")
         export TAG=$(echo ${REF} | cut -c 11-)
