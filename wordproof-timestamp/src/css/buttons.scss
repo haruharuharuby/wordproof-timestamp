@@ -1,0 +1,32 @@
+.wbtn {
+  @apply bg-gray-200 px-4 py-3 font-semibold rounded relative text-gray-700 no-underline cursor-pointer border-0 inline-block;
+  box-shadow: 0px 2px 0px 0px theme('colors.gray.400');
+  box-sizing: content-box;
+
+  &:hover {
+    @apply text-white bg-gray-400;
+  }
+
+  &-primary {
+    @apply bg-wordproof text-white ;
+    box-shadow: 0px 2px 0px 0px theme('colors.wordproofDark');
+
+    &:hover {
+      @apply bg-wordproofVeryLight;
+      box-shadow: 0px 2px 0px 0px theme('colors.wordproofLight');
+    }
+  }
+
+  &-secondary {
+    @apply bg-blue-500 text-white ;
+    box-shadow: 0px 2px 0px 0px theme('colors.blue.600');
+
+    &:hover {
+      @apply text-gray-100 bg-blue-600;
+    }
+  }
+
+  &-large {
+    @apply px-6 py-4;
+  }
+}

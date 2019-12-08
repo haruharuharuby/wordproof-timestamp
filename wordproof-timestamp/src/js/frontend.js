@@ -1,55 +1,36 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Certificate from './components/Certficate/Certificate';
 
-(function() {
-  let schema = document.querySelector('.wordproof-schema');
+import Modal from "./components/Certficate/Modal/Modal";
+import Link from "./components/Certficate/Link/Link";
+
+document.addEventListener('DOMContentLoaded', function () {
+  const schema = document.querySelector('script.wordproof-schema');
 
   if (schema) {
-    schema = JSON.parse(schema.innerHTML);
-    if (document.querySelector('#wordproof-certificate-container')) {
-      ReactDOM.render(<Certificate schema={schema} />, document.querySelector('#wordproof-certificate-container'));
-      checkUrlForWordproof();
-      addCertificateLinkEventListener();
-      addCloseModalEventListener();
-    }
+    initModal();
+    initLink();
   }
-})();
+});
 
-function addCertificateLinkEventListener() {
-  document.querySelector('.wordproof-certificate-helper').addEventListener('click', function () {
-    showModal();
-  }, false);
+function initModal() {
+  ReactDOM.render(
+      <Modal/>,
+      document.querySelector('#wordproof-certificate-modal'));
 }
 
-function addCloseModalEventListener() {
-  let modal = getModal();
-  modal.querySelector('.wordproof-modal-background').addEventListener('click', (e) => handleCloseModalEvent(e), false);
-  modal.querySelector('.wordproof-modal-close').addEventListener('click', (e) => handleCloseModalEvent(e), false);
+function initLink() {
+  if (wordproof.automate.dom)
+    addLinkContainer(wordproof.automate.dom);
+
+  ReactDOM.render(
+      <Link text={wordproof.link.text} url={wordproof.link.url} postId={wordproof.link.postId}/>,
+      document.querySelector('#wordproof-certificate-link'));
 }
 
-function handleCloseModalEvent(event) {
-  event.preventDefault();
-  hideModal();
-}
-
-/*
-Show modal if the url contains #wordproof
- */
-function checkUrlForWordproof() {
-  if(window.location.href.indexOf("#wordproof") > -1) {
-    showModal();
-  }
-}
-
-function getModal() {
-  return document.querySelector('#wordproof-certificate-container .shadowHost').shadowRoot.querySelector('.modal');
-}
-
-function hideModal() {
-  getModal().classList.remove('is-active');
-}
-
-function showModal() {
-  getModal().classList.add('is-active');
+function addLinkContainer(parentQuery) {
+  let parent = document.querySelector(parentQuery);
+  let div = document.createElement('div');
+  div.setAttribute('id', 'wordproof-certificate-link');
+  parent.appendChild(div);
 }

@@ -1,36 +1,42 @@
 <?php
 
-namespace WordProofTimestampFree\includes\Controller;
+namespace WordProofTimestamp\includes\Controller;
 
-use WordProofTimestampFree\includes\PostMetaHelper;
+use WordProofTimestamp\includes\PostMetaHelper;
 
 class SchemaController
 {
   /**
-   * @param $post
+   * @param $postId
    * @return bool|object|string
    */
-  public static function getSchema($post)
+  public static function getSchema($postId)
   {
-    if (is_int($post)) {
-      $post = get_post($post);
-    }
+    $meta = PostMetaHelper::getPostMeta($postId);
 
-    $meta = PostMetaHelper::getPostMeta($post);
+    if (!isset($meta->blockchain) || empty($meta->blockchain) || !isset($meta->date) || empty($meta->date))
+      return '';
+
     $type = (isset($meta->type)) ? $meta->type : '';
     $attributes = (isset($meta->attributes)) ? $meta->attributes : [];
 
     switch ($type) {
-      case WEB_ARTICLE_TIMESTAMP:
-        $object = self::generateSchemaForArticle($meta, $attributes);
+      case ARTICLE_TIMESTAMP:
+        $object = self::articleSchema($meta, $attributes);
+        break;
+      case MEDIA_OBJECT_TIMESTAMP:
+        $object = self::mediaObjectSchema($meta, $attributes);
+        break;
+      case 'WebArticleTimestamp':
+        $object = self::webArticleSchema($meta, $attributes);
         break;
       default:
-        $object = self::generateSchemaLegacy($post, $meta);
+        $object = self::legacySchema($meta);
         break;
     }
 
     if (!$object) {
-      return false;
+      return '';
     }
 
     $schema = '<script type="application/ld+json" class="wordproof-schema">';
@@ -43,14 +49,14 @@ class SchemaController
    * @param $meta
    * @param $attributes
    * @return object|bool
-   * More info: https://github.com/wordproof/timestamp-standard/blob/master/WebArticleTimestamp.md
+   * More info: https://github.com/wordproof/timestamp-standard/blob/master/ArticleTimestamp.md
    */
-  private static function generateSchemaForArticle($meta, $attributes)
+  private static function articleSchema($meta, $attributes)
   {
     switch ($meta->version) {
-      case 0.1:
+      default:
         $array = [];
-        $array['@context']['@type'] = WEB_ARTICLE_TIMESTAMP;
+        $array['@context']['@type'] = ARTICLE_TIMESTAMP;
         $array['@context']['@version'] = $meta->version;
         $array['blockchain'] = $meta->blockchain;
         $array['transactionId'] = $meta->transactionId;
@@ -62,27 +68,80 @@ class SchemaController
         foreach ($attributes as $key => $value) {
           $array[$key] = $value;
         }
-        return json_encode($array, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
-      default:
-        return false;
+        return json_encode($array, JSON_UNESCAPED_UNICODE);
     }
   }
 
   /**
-   * @param $post
+   * @param $meta
+   * @param $attributes
+   * @return object|bool
+   * More info: https://github.com/wordproof/timestamp-standard/blob/master/MediaObjectTimestamp.md
+   */
+  private static function mediaObjectSchema($meta, $attributes)
+  {
+    switch ($meta->version) {
+      default:
+        $array = [];
+        $array['@context']['@type'] = MEDIA_OBJECT_TIMESTAMP;
+        $array['@context']['@version'] = $meta->version;
+        $array['blockchain'] = $meta->blockchain;
+        $array['transactionId'] = $meta->transactionId;
+        $array['hash'] = $meta->hash;
+        $array['title'] = $meta->title;
+        $array['contentHash'] = $meta->contentHash;
+        $array['contentUrl'] = $meta->contentUrl;
+        $array['encodingFormat'] = $meta->encodingFormat;
+        $array['date'] = $meta->date;
+
+        foreach ($attributes as $key => $value) {
+          $array[$key] = $value;
+        }
+        return json_encode($array, JSON_UNESCAPED_UNICODE);
+    }
+  }
+
+  /**
+   * @param $meta
+   * @param $attributes
+   * @return object|bool
+   * More info: https://github.com/wordproof/timestamp-standard/blob/master/WebArticleTimestamp.md
+   */
+  private static function webArticleSchema($meta, $attributes)
+  {
+    switch ($meta->version) {
+      default:
+        $array = [];
+        $array['@context']['@type'] = 'WebArticleTimestamp';
+        $array['@context']['@version'] = $meta->version;
+        $array['blockchain'] = $meta->blockchain;
+        $array['transactionId'] = $meta->transactionId;
+        $array['hash'] = $meta->hash;
+        $array['title'] = $meta->title;
+        $array['content'] = $meta->content;
+        $array['date'] = $meta->date;
+
+        foreach ($attributes as $key => $value) {
+          $array[$key] = $value;
+        }
+        return json_encode($array, JSON_UNESCAPED_UNICODE);
+    }
+  }
+
+  /**
    * @param $meta
    * @return object
    */
-  private static function generateSchemaLegacy($post, $meta)
+  private static function legacySchema($meta)
   {
     $array = [];
-    $array['blockchain'] = $meta->wordproof_network;
-    $array['transactionId'] = $meta->wordproof_transaction_id;
-    $array['hash'] = $meta->wordproof_hash;
-    $array['title'] = $post->post_title;
-    $array['content'] = $post->post_content;
-    $array['date'] = get_the_modified_date('c', $post);
-    $array['url'] = $meta->wordproof_link;
+    $array['blockchain'] = $meta->blockchain;
+    $array['transactionId'] = $meta->transactionId;
+    $array['hash'] = $meta->hash;
+    $array['title'] = $meta->title;
+    $array['content'] = $meta->content;
+    $array['date'] = get_the_modified_date('c', $meta->date);
+    $array['url'] = $meta->url;
     return json_encode($array);
   }
 }
